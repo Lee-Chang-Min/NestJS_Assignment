@@ -14,7 +14,7 @@ export class Patient {
   @Column({ length: 11, nullable: true })
   phoneNumber: string;
 
-  @Column({ length: 9, nullable: true }) // 주민번호 앞자리 + 성별 식별자
+  @Column({ length: 9 }) 
   rrn: string;
 
   @Column({ length: 255, nullable: true })

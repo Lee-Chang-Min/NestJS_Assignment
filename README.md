@@ -43,3 +43,33 @@ npm install
 - `refactor`: 코드 리팩토링
 - `test`: 테스트 코드 추가 또는 수정
 - `chore`: 빌드 프로세스, 패키지 매니저 설정 등 (소스 코드 변경 없음)
+
+
+
+
+// ThrottlerModule.forRootAsync({
+//   imports: [SharedModule],
+//   useFactory: (configService: ApiConfigService) => ({
+//     throttlers: [configService.throttlerConfigs],
+//   }),
+//   inject: [ApiConfigService],
+// }),
+// ConfigModule.forRoot({
+//   isGlobal: true,
+//   envFilePath: '.env',
+// }),
+// TypeOrmModule.forRootAsync({
+//   imports: [SharedModule],
+//   useFactory: (configService: ApiConfigService) =>
+//     configService.postgresConfig,
+//   inject: [ApiConfigService],
+//   dataSourceFactory: (options) => {
+//     if (!options) {
+//       throw new Error('Invalid options passed');
+//     }
+
+//     return Promise.resolve(
+//       addTransactionalDataSource(new DataSource(options)),
+//     );
+//   },
+// })
