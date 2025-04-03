@@ -11,11 +11,12 @@ export class UploadExcelDto {
   name: string;
 
   /**
+  ''                   ✅
   '01012345678'        ✅
   '010-1234-5678'      ✅
    */
   @IsOptional()
-  @Matches(/^(010\d{8}|010-\d{4}-\d{4})$/, { 
+  @Matches(/^(|010\d{8}|010-\d{4}-\d{4})$/, { 
     message: '전화번호 형식이 잘못되었습니다.' 
   })
   phoneRaw?: string;
