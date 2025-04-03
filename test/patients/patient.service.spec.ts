@@ -2,12 +2,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { PatientsService } from '../../src/patients/patient.service';
 import { Patient } from '../../src/patients/patient.entity';
+import { IsNull, Repository } from 'typeorm';
 
 describe('PatientsService', () => {
   let service: PatientsService;
-  
+  let patientRepository: Repository<Patient>;
+
   const mockPatientRepository = {
     find: jest.fn(),
+    findOne: jest.fn(),
     save: jest.fn(),
   };
 
@@ -23,6 +26,10 @@ describe('PatientsService', () => {
     }).compile();
 
     service = module.get<PatientsService>(PatientsService);
+    patientRepository = module.get<Repository<Patient>>(
+      getRepositoryToken(Patient),
+    );
+
   });
 
   it('should be defined', () => {
@@ -39,9 +46,9 @@ describe('PatientsService', () => {
       
       // 1행 
       patientsMap.set(1, {
-        chartNumber: "C_1001",
+        chart: "C_1001",
         name: "김환자1",
-        phoneNumber: "010-0000-0000",
+        phone: "010-0000-0000",
         rrn: "010101-1111111",
         address: "서울 성동구",
         memo: "3.6 방문",
@@ -49,9 +56,9 @@ describe('PatientsService', () => {
   
       // 2행
       patientsMap.set(2, {
-        chartNumber: "",
+        chart: "",
         name: "김환자1",
-        phoneNumber: "010-0000-0000",
+        phone: "010-0000-0000",
         rrn: "010101-1111111",
         address: "",
         memo: "3.7 방문",
@@ -59,9 +66,9 @@ describe('PatientsService', () => {
   
       // 3행 
       patientsMap.set(3, {
-        chartNumber: "C_1002",
+        chart: "C_1002",
         name: "김환자1",
-        phoneNumber: "010-0000-0000",
+        phone: "010-0000-0000",
         rrn: "010101-1111111",
         address: "서울 성동구",
         memo: "노쇼",
@@ -69,9 +76,9 @@ describe('PatientsService', () => {
   
       // 4행 
       patientsMap.set(4, {
-        chartNumber: "",
+        chart: "",
         name: "김환자1",
-        phoneNumber: "010-0000-0000",
+        phone: "010-0000-0000",
         rrn: "010101-2",
         address: "",
         memo: "3.7 방문",
@@ -79,9 +86,9 @@ describe('PatientsService', () => {
   
       // 5행 
       patientsMap.set(5, {
-        chartNumber: "C_1002",
+        chart: "C_1002",
         name: "김환자1",
-        phoneNumber: "010-0000-0000",
+        phone: "010-0000-0000",
         rrn: "010101-1",
         address: "서울 특별시 강동구",
         memo: "",
@@ -89,9 +96,9 @@ describe('PatientsService', () => {
 
       // 6행 
       patientsMap.set(6, {
-        chartNumber: "",
+        chart: "",
         name: "김환자2",
-        phoneNumber: "010-0000-0000",
+        phone: "010-0000-0000",
         rrn: "010101-1",
         address: "",
         memo: "",
@@ -135,4 +142,57 @@ describe('PatientsService', () => {
     });
   });
   
+  describe('savePatients', () => {
+
+    const initialPatients: Patient[] = [
+      {
+        id: 15364,
+        chart: '' ,
+        name: '김환자1',
+        phone: '01000000000',
+        rrn: '010101-1',
+        address: '',
+        memo: '5.10 방문',
+      },
+      {
+        id: 15365,
+        chart: 'C_1003',
+        name: '김환자2',
+        phone: '01000000000',
+        rrn: '010101-1',
+        address: '',
+        memo: '5.11 방문',
+      },
+    ];
+
+    const mergedPatients = [
+      {
+        chart: 'C_1001',
+        name: '김환자1',
+        phone: '01000000000',
+        rrn: '010101-1',
+        address: '서울 성동구',
+        memo: '3.7 방문',
+      },
+      {
+        chart: 'C_1002',
+        name: '김환자1',
+        phone: '01000000000',
+        rrn: '010101-1',
+        address: '서울 강동구',
+        memo: '3.7 방문',
+      },
+      {
+        chart: '',
+        name: '김환자2',
+        phone: '01000000000',
+        rrn: '010101-1',
+        address: '',
+        memo: '',
+      },
+    ];
+
+  });
+  
+
 });

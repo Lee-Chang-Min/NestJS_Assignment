@@ -1,18 +1,18 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Entity('patients')
 export class Patient {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ length: 255, nullable: true })
-  chartNumber: string;
+  chart: string;
 
   @Column({ length: 255 })
   name: string;
 
   @Column({ length: 11, nullable: true })
-  phoneNumber: string;
+  phone: string ;
 
   @Column({ length: 9 }) 
   rrn: string;

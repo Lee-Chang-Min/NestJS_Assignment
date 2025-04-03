@@ -4,6 +4,14 @@ export interface ProcessExcelResult {
     totalRows: number;
     processedRows: number;
     skippedRows: number;
-    patientsMap: Map<number, Patient>;
+  }
+  
+
+export interface PatientListResponse {
+  total: number;
+  page: number;
+  count: number;
+  data: Patient[];
+  totalPages: number;
   }
   
