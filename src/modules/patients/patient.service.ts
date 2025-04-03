@@ -3,14 +3,9 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Patient } from './patient.entity';
 import { In, Repository } from 'typeorm';
-import { plainToInstance } from 'class-transformer';
-import { validateSync } from 'class-validator';
-import * as ExcelJS from 'exceljs';
-// https://github.com/exceljs/exceljs#readme
 
-import { UploadExcelDto } from './dtos/upload-excel.dto';
-import { PatientListResponse, ProcessExcelResult } from 'src/interfaces/patient.interface';
-import { normalizeRRN } from './utils/patient.util';
+import { PatientListResponse } from 'src/interfaces/patient.interface';
+import { ExcelProcessor } from '../../utils/excel.processor';
 
 @Injectable()
 export class PatientsService {
@@ -19,6 +14,7 @@ export class PatientsService {
   constructor(
     @InjectRepository(Patient)
     private readonly patientRepository: Repository<Patient>,
+    private readonly excelProcessor: ExcelProcessor,
   ) {}
 
   /**
@@ -26,66 +22,25 @@ export class PatientsService {
    * @param file 업로드된 Excel 파일
    * @returns 처리 결과
    */
-  public async processExcel(file: Express.Multer.File): Promise<ProcessExcelResult> {
-
+  public async processExcel(file: Express.Multer.File): Promise<{
+    totalRows: number;
+    processedRows: number;
+    skippedRows: number;
+  }> {
     try {
-      this.logger.log('[processExcel] Excel 파일 업로드 시작');
+      const { patientsMap, processedRows, skippedRows, totalRows } =
+        await this.excelProcessor.processExcel(file);
 
-      const workbook = new ExcelJS.Workbook();
-      await workbook.xlsx.load(file.buffer);
-      const worksheet = workbook.worksheets[0];
-
-      const patientsMap = new Map<number, Patient>();
-      
-      let skippedRows = 0;
-      let processedRows = 0;
-
-      worksheet.eachRow((row, rowNumber) => {
-        if (rowNumber === 1) return; // Excel 헤더 스킵
-
-        const rowData = {
-          chartNumber: row.getCell(1).text.trim(),
-          name: row.getCell(2).text.trim(),
-          phoneRaw: row.getCell(3).text.trim(),
-          rrnRaw: row.getCell(4).text.trim(),
-          address: row.getCell(5).text.trim(),
-          memo: row.getCell(6).text.trim(),
-        };
-
-        // [1] 잘못된 데이터 형식 Skip (데이터 검증)
-        const dto = plainToInstance(UploadExcelDto, rowData);
-        const errors = validateSync(dto);
-
-        if (errors.length > 0) {
-          skippedRows++;
-        } else {
-          processedRows++;
-
-          // [2] 데이터 정제
-          const phoneNumber = rowData.phoneRaw.replace(/-/g, '');
-          const rrn = normalizeRRN(rowData.rrnRaw);
-
-          patientsMap.set(rowNumber, {
-            chart: dto.chartNumber,
-            name: dto.name,
-            phone: phoneNumber,
-            rrn: rrn,
-            address: dto.address,
-            memo: dto.memo,
-          } as Patient);
-        }
-      });
-
-      // [3] 중복 병합 로직 적용
+      // [1] 중복 병합 로직 적용
       const mergedPatients = this.mergePatients(patientsMap);
-      console.log(mergedPatients.length);
+      // console.log(mergedPatients.length);
 
-      // [4] 환자 저장
+      // [2] 환자 저장
       await this.savePatients(mergedPatients);
 
       // TODO: 중복 병합 로직 적용 후 저장
       return {
-        totalRows: worksheet.actualRowCount - 1,
+        totalRows,
         processedRows,
         skippedRows,
       };
@@ -109,11 +64,9 @@ export class PatientsService {
 
     try {
       this.logger.log(`[getPatientsList] 환자 목록 조회 시작`);
-
-      // 쿼리 빌더 생성
+      
       const queryBuilder = this.patientRepository.createQueryBuilder('patient');
        
-      // 검색 조건 적용
       if (name) {
         queryBuilder.andWhere('patient.name LIKE :name', { name: `%${name}%` });
       }

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { PatientsService } from '../../src/patients/patient.service';
-import { Patient } from '../../src/patients/patient.entity';
+import { PatientsService } from '../../src/modules/patients/patient.service';
+import { Patient } from '../../src/modules/patients/patient.entity';
 import { IsNull, Repository } from 'typeorm';
 
 describe('PatientsService', () => {

@@ -11,7 +11,7 @@ export class Patient {
   @Column({ length: 255 })
   name: string;
 
-  @Column({ length: 11, nullable: true })
+  @Column({ length: 11, nullable: true})
   phone: string ;
 
   @Column({ length: 9 }) 

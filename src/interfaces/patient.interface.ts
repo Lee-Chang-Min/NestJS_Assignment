@@ -1,9 +1,10 @@
-import { Patient } from "src/patients/patient.entity";
+import { Patient } from "src/modules/patients/patient.entity";
 
 export interface ProcessExcelResult {
-    totalRows: number;
+    patientsMap: Map<number, Patient>;
     processedRows: number;
     skippedRows: number;
+    totalRows: number;
   }
   
 
