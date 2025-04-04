@@ -2,11 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { PatientsService } from '../../src/modules/patients/patient.service';
 import { Patient } from '../../src/modules/patients/patient.entity';
-import { IsNull, Repository } from 'typeorm';
+// import { IsNull, Repository } from 'typeorm';
 
 describe('PatientsService', () => {
   let service: PatientsService;
-  let patientRepository: Repository<Patient>;
+  // let patientRepository: Repository<Patient>;
 
   const mockPatientRepository = {
     find: jest.fn(),
@@ -26,9 +26,9 @@ describe('PatientsService', () => {
     }).compile();
 
     service = module.get<PatientsService>(PatientsService);
-    patientRepository = module.get<Repository<Patient>>(
-      getRepositoryToken(Patient),
-    );
+    // patientRepository = module.get<Repository<Patient>>(
+    //   getRepositoryToken(Patient),
+    // );
 
   });
 
@@ -142,57 +142,57 @@ describe('PatientsService', () => {
     });
   });
   
-  describe('savePatients', () => {
+  // describe('savePatients', () => {
 
-    const initialPatients: Patient[] = [
-      {
-        id: 15364,
-        chart: '' ,
-        name: '김환자1',
-        phone: '01000000000',
-        rrn: '010101-1',
-        address: '',
-        memo: '5.10 방문',
-      },
-      {
-        id: 15365,
-        chart: 'C_1003',
-        name: '김환자2',
-        phone: '01000000000',
-        rrn: '010101-1',
-        address: '',
-        memo: '5.11 방문',
-      },
-    ];
+  //   const initialPatients: Patient[] = [
+  //     {
+  //       id: 15364,
+  //       chart: '' ,
+  //       name: '김환자1',
+  //       phone: '01000000000',
+  //       rrn: '010101-1',
+  //       address: '',
+  //       memo: '5.10 방문',
+  //     },
+  //     {
+  //       id: 15365,
+  //       chart: 'C_1003',
+  //       name: '김환자2',
+  //       phone: '01000000000',
+  //       rrn: '010101-1',
+  //       address: '',
+  //       memo: '5.11 방문',
+  //     },
+  //   ];
 
-    const mergedPatients = [
-      {
-        chart: 'C_1001',
-        name: '김환자1',
-        phone: '01000000000',
-        rrn: '010101-1',
-        address: '서울 성동구',
-        memo: '3.7 방문',
-      },
-      {
-        chart: 'C_1002',
-        name: '김환자1',
-        phone: '01000000000',
-        rrn: '010101-1',
-        address: '서울 강동구',
-        memo: '3.7 방문',
-      },
-      {
-        chart: '',
-        name: '김환자2',
-        phone: '01000000000',
-        rrn: '010101-1',
-        address: '',
-        memo: '',
-      },
-    ];
+  //   const mergedPatients = [
+  //     {
+  //       chart: 'C_1001',
+  //       name: '김환자1',
+  //       phone: '01000000000',
+  //       rrn: '010101-1',
+  //       address: '서울 성동구',
+  //       memo: '3.7 방문',
+  //     },
+  //     {
+  //       chart: 'C_1002',
+  //       name: '김환자1',
+  //       phone: '01000000000',
+  //       rrn: '010101-1',
+  //       address: '서울 강동구',
+  //       memo: '3.7 방문',
+  //     },
+  //     {
+  //       chart: '',
+  //       name: '김환자2',
+  //       phone: '01000000000',
+  //       rrn: '010101-1',
+  //       address: '',
+  //       memo: '',
+  //     },
+  //   ];
 
-  });
+  // });
   
 
 });
