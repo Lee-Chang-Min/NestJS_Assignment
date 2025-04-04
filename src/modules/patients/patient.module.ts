@@ -4,9 +4,14 @@ import { Patient } from './patient.entity';
 import { PatientsService } from './patient.service';
 import { PatientsController } from './patient.controller';
 import { ExcelProcessor } from '../../utils/excel.processor';
+import { PatientRepository } from './patient.repository';
 @Module({
   imports: [TypeOrmModule.forFeature([Patient])],
   controllers: [PatientsController],
-  providers: [PatientsService, ExcelProcessor],
+  providers: [
+    PatientsService, 
+    ExcelProcessor,
+    PatientRepository,
+  ],
 })
 export class PatientsModule {}
