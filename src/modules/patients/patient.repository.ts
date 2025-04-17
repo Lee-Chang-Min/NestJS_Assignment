@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 @Injectable()
 export class PatientRepository {
     private readonly logger = new Logger(PatientRepository.name);
-    private readonly SAVE_BATCH_SIZE = 100;
+    private readonly SAVE_BATCH_SIZE = 10;
 
     constructor(
         @InjectRepository(Patient)
@@ -80,6 +80,7 @@ export class PatientRepository {
         throw error;
         }
     }
+    
 
     /**
      * 환자 데이터를 청크 단위로 업데이트
@@ -96,6 +97,7 @@ export class PatientRepository {
                 await this.patientRepository.save(chunk);
                 updatedCount += chunk.length;
             }
+            
         } catch (error) {
             this.logger.error(`[updatePatientsInChunks] 오류 발생: ${error}`);
             throw error;

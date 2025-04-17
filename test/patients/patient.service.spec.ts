@@ -142,57 +142,84 @@ describe('PatientsService', () => {
     });
   });
   
-  // describe('savePatients', () => {
+  describe('savePatients', () => {
 
-  //   const initialPatients: Patient[] = [
-  //     {
-  //       id: 15364,
-  //       chart: '' ,
-  //       name: '김환자1',
-  //       phone: '01000000000',
-  //       rrn: '010101-1',
-  //       address: '',
-  //       memo: '5.10 방문',
-  //     },
-  //     {
-  //       id: 15365,
-  //       chart: 'C_1003',
-  //       name: '김환자2',
-  //       phone: '01000000000',
-  //       rrn: '010101-1',
-  //       address: '',
-  //       memo: '5.11 방문',
-  //     },
-  //   ];
+    const existingPatients: Patient[] = [
+      {
+        id: 15364,
+        chart: '' ,
+        name: '김환자1',
+        phone: '01000000000',
+        rrn: '010101-1',
+        address: '',
+        memo: '5.10 방문',
+      },
+      {
+        id: 15365,
+        chart: 'C_1003',
+        name: '김환자2',
+        phone: '01000000000',
+        rrn: '010101-1',
+        address: '',
+        memo: '5.11 방문',
+      },
+    ];
 
-  //   const mergedPatients = [
-  //     {
-  //       chart: 'C_1001',
-  //       name: '김환자1',
-  //       phone: '01000000000',
-  //       rrn: '010101-1',
-  //       address: '서울 성동구',
-  //       memo: '3.7 방문',
-  //     },
-  //     {
-  //       chart: 'C_1002',
-  //       name: '김환자1',
-  //       phone: '01000000000',
-  //       rrn: '010101-1',
-  //       address: '서울 강동구',
-  //       memo: '3.7 방문',
-  //     },
-  //     {
-  //       chart: '',
-  //       name: '김환자2',
-  //       phone: '01000000000',
-  //       rrn: '010101-1',
-  //       address: '',
-  //       memo: '',
-  //     },
-  //   ];
+    const mergedPatients = [
+      {
+        chart: 'C_1001',
+        name: '김환자1',
+        phone: '01000000000',
+        rrn: '010101-1',
+        address: '서울 성동구',
+        memo: '3.7 방문',
+      } as Patient,
+      {
+        chart: 'C_1002',
+        name: '김환자1',
+        phone: '01000000000',
+        rrn: '010101-1',
+        address: '서울 강동구',
+        memo: '3.7 방문',
+      } as Patient,
+      {
+        chart: '',
+        name: '김환자2',
+        phone: '01000000000',
+        rrn: '010101-1',
+        address: '',
+        memo: '',
+      } as Patient,
+    ];
 
-  // });
+    const mockPatientRepository = {
+      findByNameAndPhone: jest.fn().mockResolvedValue(existingPatients),
+      create: jest.fn((patient: Patient) => ({ ...patient })),
+      bulkInsert: jest.fn().mockResolvedValue(undefined),
+      updatePatientsInChunks: jest.fn().mockResolvedValue(2),
+    };
+
+    const mockExcelProcessor = {
+      processExcel: jest.fn(),
+    };
+
+    // 서비스 인스턴스 생성
+    const service = new PatientsService(
+      mockPatientRepository as any,
+      mockExcelProcessor as any
+    );
+
+    // private 메소드 호출을 위한 설정
+    const savePatients = async (patients: Patient[]) => 
+      await (service as unknown as { savePatients(patients: Patient[]): Promise<void> })
+        .savePatients(patients);
+
+    // 테스트 실행
+    savePatients(mergedPatients);
+
+
+
+  });
   
 
 });
